@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Merriweather Sans', sans-serif;
+    background-image: url("./999.jpeg");
+}
+
+header {
+    display: flex;
+    height: 10rem;
+    color: white;
+    font-size: 4rem;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    animation: animateTitle 0.3s linear forwards;
+}
+
+@keyframes animateTitle {
+    0% {
+        transform: translateY(20%);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    margin: 0 10vw 0 10vw;
+    border-radius: 2rem ;
+    overflow: hidden;
+}
+
+.book {
+    width: 100%;
+    flex: 3;
+    color: #ddd;
+    font-size: 3rem;
+    background: #333;
+    padding: 2rem;
+}
+
+.choices {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly   ;
+    flex-direction: row;
+    font-size: 4rem;
+    flex: 1;
+    width: 100%;
+    color: yellowgreen;
+    background: #888;
+}
+
+.choice {
+    border: 0.5rem solid greenyellow;
+    border-radius: 2rem;
+    padding: 0 1rem 0 1rem;
+    cursor: pointer;
+}
+
+.choice:hover {
+    background-color: white;
+}
+
+.fileChooser {
+    background: white;
+}
+
+
+
+
+
+
