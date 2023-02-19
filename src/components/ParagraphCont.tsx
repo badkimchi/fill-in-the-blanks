@@ -10,7 +10,7 @@ interface choiceBtnProps {
 }
 
 export const ParagraphCont: React.FC<choiceBtnProps> = ({words, nextBlankIdx}) => {
-    const txtBox = ["text-xl", "rounded-2xl", "p-4 max-h-[50vh]", "overflow-y-scroll",
+    const txtBox = ["text-xl", "rounded-2xl", "p-4 max-h-[70vh]", "overflow-y-scroll",
         "bg-gradient-to-l", "from-cyan-800", "to-blue-800"].join(' ');
 
     return <div className={txtBox}>

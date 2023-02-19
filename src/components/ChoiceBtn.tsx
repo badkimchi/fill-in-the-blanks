@@ -13,7 +13,7 @@ export const ChoiceBtn: React.FC<choiceBtnProps> = ({word, guessBlank}) => {
     const hoverSound = new Audio(hover);
     const wrongSound = new Audio(wrongBuzzer);
     const correctSound = new Audio(correctChoice);
-    const chcBtn = ["flex", "items-center", "p-4", "rounded-2xl", "border-solid", "border-2",
+    const chcBtn = ["flex", "items-center", "p-2", "h-12", "rounded-2xl", "border-solid", "border-2",
         "border-green-500", "hover:bg-green-400", "cursor-pointer", "active:bg-green-200", "transition",
         "duration-300", "hover:rotate-3", "active:skew-x-12", "active:scale-150"].join(' ');
 
