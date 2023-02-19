@@ -107,7 +107,7 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <PageBox words={tokens}/>
+            <PageBox words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
             <div className="flex items-center place-content-evenly h-40">
                 {
                     shuffledBlankIdxes.map(idx => <ChoiceBtn
