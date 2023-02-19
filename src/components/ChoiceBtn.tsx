@@ -1,7 +1,7 @@
 import React from "react";
-import hover from "../static/btnHover.wav";
-import wrongBuzzer from "../static/wrongBuzzer.wav";
-import correctChoice from "../static/correctChoice.wav";
+import hover from "../assets/sound/btnHover.wav";
+import wrongBuzzer from "../assets/sound/wrongBuzzer.wav";
+import correctChoice from "../assets/sound/correctChoice.wav";
 
 interface choiceBtnProps {
     word: string;
