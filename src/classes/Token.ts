@@ -31,7 +31,18 @@ export class Token {
     }
 
     public getWord(): string {
+        if (this.endsWithPunctuation()) {
+            return this.letters.slice(0, this.letters.length - 1)
+        }
         return this.letters;
+    }
+
+    public endsWithPunctuation(): boolean {
+        return punctuations.includes(this.letters[this.letters.length - 1]);
+    }
+
+    public getLastLetter(): string {
+        return this.letters[this.letters.length - 1];
     }
 
     public getState(): TokenState {

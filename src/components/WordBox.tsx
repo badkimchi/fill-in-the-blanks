@@ -13,22 +13,34 @@ export const WordBox: React.FC<wordBoxProps> = ({word, inQuestion}) => {
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
     if (word.getState() === TokenState.Blanked) {
-        return <div className={baseStyle + ' w-28 bg-white' + markNextInQuestion}>
-            ???
-        </div>
+        return <React.Fragment>
+            <div className={baseStyle + ' w-28 bg-white' + markNextInQuestion}>
+                ???
+            </div>
+            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
+        </React.Fragment>
     }
     if (word.getState() === TokenState.WrongGuess) {
-        return <div className={baseStyle + ' w-28 bg-red-300 border-solid border-2 border-red-200'}>
-            ???
-        </div>
+        return <React.Fragment>
+            <div className={baseStyle + ' w-28 bg-red-300 border-solid border-2 border-red-200'}>
+                ???
+            </div>
+            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
+        </React.Fragment>
     }
     if (word.getState() === TokenState.Correct) {
-        return <div className={baseStyle + ' border-solid border-2 border-green-200'}>
-            {word.getWord()}
-        </div>
+        return <React.Fragment>
+            <div className={baseStyle + ' border-solid border-2 border-green-200'}>
+                {word.getWord()}
+            </div>
+            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
+        </React.Fragment>
     }
 
-    return <div className={baseStyle}>
-        {word.getWord()}
-    </div>
+    return <React.Fragment>
+        <div className={baseStyle}>
+            {word.getWord()}
+        </div>
+        {word.endsWithPunctuation() ? word.getLastLetter() : ''}
+    </React.Fragment>
 }
