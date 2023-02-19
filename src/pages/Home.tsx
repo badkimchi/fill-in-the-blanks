@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {PageBox} from "../components/PageBox";
+import {ParagraphCont} from "../components/ParagraphCont";
 import {Token, TokenState} from "../classes/Token";
 import {Random} from "../classes/Random";
 import {ChoiceBtn} from "../components/ChoiceBtn";
@@ -139,7 +139,7 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <PageBox words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
+            <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
             <div className="flex items-center place-content-evenly h-40">
                 {
                     shuffledBlankIdxes.map(idx => <ChoiceBtn

@@ -8,13 +8,13 @@ interface wordBoxProps {
     inQuestion: boolean;
 }
 
-export const WordBox: React.FC<wordBoxProps> = ({word, inQuestion}) => {
-    const baseStyle = 'inline-block ml-2.5 h-8 inline-flex items-center justify-center rounded-md py-3';
+export const WordCont: React.FC<wordBoxProps> = ({word, inQuestion}) => {
+    const baseStyle = 'inline-block ml-2.5 mb-1 h-8 inline-flex items-center justify-center rounded-md py-3 ';
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
     if (word.getState() === TokenState.Blanked) {
         return <React.Fragment>
-            <div className={baseStyle + ' w-28 bg-white' + markNextInQuestion}>
+            <div className={baseStyle + ' w-40 bg-white' + markNextInQuestion}>
                 ???
             </div>
             {word.endsWithPunctuation() ? word.getLastLetter() : ''}
@@ -22,7 +22,7 @@ export const WordBox: React.FC<wordBoxProps> = ({word, inQuestion}) => {
     }
     if (word.getState() === TokenState.WrongGuess) {
         return <React.Fragment>
-            <div className={baseStyle + ' w-28 bg-red-300 border-solid border-2 border-red-200'}>
+            <div className={baseStyle + ' w-40 bg-red-300 border-solid border-2 border-red-200'}>
                 ???
             </div>
             {word.endsWithPunctuation() ? word.getLastLetter() : ''}
@@ -30,7 +30,7 @@ export const WordBox: React.FC<wordBoxProps> = ({word, inQuestion}) => {
     }
     if (word.getState() === TokenState.Correct) {
         return <React.Fragment>
-            <div className={baseStyle + ' border-solid border-2 border-green-200'}>
+            <div className={baseStyle + ' w-40 bg-white text-black border-solid border-2 border-green-200'}>
                 {word.getWord()}
             </div>
             {word.endsWithPunctuation() ? word.getLastLetter() : ''}

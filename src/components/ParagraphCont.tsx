@@ -1,6 +1,6 @@
 import React from "react";
 import {Token} from "../classes/Token";
-import {WordBox} from "./WordBox";
+import {WordCont} from "./WordCont";
 
 interface choiceBtnProps {
     words: Array<Token>;
@@ -9,14 +9,14 @@ interface choiceBtnProps {
     nextBlankIdx: number;
 }
 
-export const PageBox: React.FC<choiceBtnProps> = ({words, nextBlankIdx}) => {
-    const txtBox = ["text-2xl", "rounded-2xl", "p-4 max-h-[50vh]", "overflow-y-scroll",
+export const ParagraphCont: React.FC<choiceBtnProps> = ({words, nextBlankIdx}) => {
+    const txtBox = ["text-xl", "rounded-2xl", "p-4 max-h-[50vh]", "overflow-y-scroll",
         "bg-gradient-to-l", "from-cyan-800", "to-blue-800"].join(' ');
 
     return <div className={txtBox}>
         {
             words.map((word, idx) =>
-                <WordBox key={idx} word={word} inQuestion={idx === nextBlankIdx}/>)
+                <WordCont key={idx} word={word} inQuestion={idx === nextBlankIdx}/>)
         }
     </div>
 }
