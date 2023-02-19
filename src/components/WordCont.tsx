@@ -9,7 +9,7 @@ interface wordBoxProps {
 }
 
 export const WordCont: React.FC<wordBoxProps> = ({word, inQuestion}) => {
-    const baseStyle = 'inline-block ml-2.5 mb-1 h-6 inline-flex items-center justify-center rounded-md py-3 ';
+    const baseStyle = 'inline-block ml-2.5 mb-1 h-8 inline-flex items-center justify-center rounded-md py-3 ';
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
     if (word.getState() === TokenState.Blanked) {

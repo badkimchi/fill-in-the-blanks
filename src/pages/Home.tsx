@@ -13,12 +13,31 @@ const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when 
 
 const bookData = book.text.split('\n').filter(t => t !== '');
 
-
 export default function Home() {
+
+    /**
+     * Whole text of data to be displayed at the current page.
+     */
     const [paragraph, setParagraph] = useState<string>(exampleTxt);
-    const [page, setPage] = useState<number>(0);
-    const maxPage = bookData?.length;
-    const linesPerPage = 1;
+
+    /**
+     * Line number offset in the book.
+     */
+    const [line, setLine] = useState<number>(0);
+
+    const endLineNumber = bookData?.length;
+
+    /**
+     * # of lines that will be displayed at a page at a time.
+     */
+    const linesPerPage = 3;
+
+    /**
+     * if target characters per page is already satisfied,
+     * no more lines will be read for the page
+     * even if the linesPerPage is higher than actual lines that were read.
+     */
+    const targetCharactersPerPage = 250;
 
     /**
      * List of words and punctuations that make up the page in a book.
@@ -119,11 +138,14 @@ export default function Home() {
      */
     useEffect(() => {
         let newParagraph = '';
-        for (let i = page * linesPerPage; i < Math.min((page + 1) * linesPerPage, maxPage); i++) {
+        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber); i++) {
             newParagraph += bookData[i];
+            if (newParagraph.length >= targetCharactersPerPage) {
+                break;
+            }
         }
         setParagraph(newParagraph);
-    }, [page, maxPage])
+    }, [line, endLineNumber])
 
     /**
      * When all blanks are filled, turn the page to the next.
@@ -132,10 +154,10 @@ export default function Home() {
         if (blankIdxes.length === 0) {
             setBlankIdxes([0])
             setTimeout(() => {
-                setPage(page => page + 1);
+                setLine(line => line + linesPerPage);
             }, 500)
         }
-    }, [blankIdxes, page])
+    }, [blankIdxes, line])
 
     return (
         <React.Fragment>
