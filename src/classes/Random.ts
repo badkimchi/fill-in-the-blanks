@@ -12,6 +12,8 @@ export class Random {
         while (cnt > 0) {
             const item = Random.choseOneFrom(set);
             chosen.add(item);
+
+            //prevent duplicate
             set.delete(item);
             cnt--;
         }
@@ -28,6 +30,26 @@ export class Random {
             throw Error('cannot choose item from an empty set!')
         }
         const itemsArr: Array<any> = Array.from(items);
-        return itemsArr[Math.floor(Math.random() * itemsArr.length)];
+        const randomIdx = Math.floor(Math.random() * itemsArr.length);
+        return itemsArr[randomIdx];
+    }
+
+    /**
+     * Returns the array with its items re-ordered (The Fisher–Yates shuffle)
+     *
+     * @param items array that will be shuffled
+     */
+    static shuffle(items: Array<any>): Array<any> {
+        let currentIndex = items.length, randomIndex;
+        
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [items[currentIndex], items[randomIndex]] = [
+                items[randomIndex], items[currentIndex]];
+        }
+        return items;
     }
 }

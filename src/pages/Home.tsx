@@ -18,41 +18,59 @@ export default function Home() {
 
     /**
      * indices of blanked out words in tokens array.
+     * they are in the same order as the words appear in the paragraph.
+     * they are used to check if the guess is correct.
+     *
      */
     const [blankIdxes, setBlankIdxes] = useState<Array<number>>([]);
 
     /**
+     * maintain a separate shuffled indices of the blanked out words
+     * to generate word choices for guessing.
+     */
+    const [shuffledBlankIdxes, setShuffledBlankIdxes] = useState<Array<number>>([]);
+
+
+    /**
      * The number of words to be displayed as a blank in the page.
      */
-    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(3);
+    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(5);
 
     /**
      * Turn paragraphs into tokens
      */
     useEffect(() => {
+        // parse paragraphs into tokens
         const tempTokens = temp
-            .split(/\n|\t| /)
+            .split(/[\n\t ]/)
             .filter(t => t.trim() !== '')
             .map(t => new Token(t));
 
+        // using unique words to avoid high frequency words
         const uniqueWords = new Set<string>(tempTokens
             .filter(t => t.isWord())
             .map(t => t.getWord()));
+
         const blanksCnt = Math.min(uniqueWords.size, desiredBlanksCnt);
         const blankedWords = Random.chooseManyFrom(uniqueWords, blanksCnt);
-        const idxes: Array<number> = [];
+        const tokenIdxes: Array<number> = [];
+
+        // blank out the token if it is a blanked word.
         const newTokens = tempTokens.map((t, idx) => {
             if (blankedWords.has(t.getWord())) {
                 t.setState(TokenState.Blanked);
-                idxes.push(idx);
+                tokenIdxes.push(idx);
+
+                // ensure that we only blank out one (first) occurrence.
                 blankedWords.delete(t.getWord());
                 return t;
             }
             return t;
         })
-        setBlankIdxes(idxes);
+        setBlankIdxes([...tokenIdxes]);
+        setShuffledBlankIdxes(Random.shuffle([...tokenIdxes]));
         setTokens(newTokens);
-    }, [temp])
+    }, [desiredBlanksCnt, temp])
 
     /**
      * Guess the blank word.
@@ -62,17 +80,26 @@ export default function Home() {
      */
     const guessBlank = (word: string): boolean => {
         const idx = blankIdxes[0];
+
+        // the button for this action should be hidden to prevent this case.
+        // checking idx here removes warning for using it as an index in the next block.
         if (idx === undefined) {
             console.error('no more blanked words!')
             return false;
         }
+
+        // if the guess is wrong, mark it.
         if (word !== tokens[idx].getWord()) {
             tokens[idx].setState(TokenState.WrongGuess);
             setTokens([...tokens]);
             return false;
         }
+
+        // remove the already guessed answer from re-appearing in the choices
         blankIdxes.shift()
         setBlankIdxes([...blankIdxes]);
+        setShuffledBlankIdxes(shuffledBlankIdxes.filter(shuIdx => shuIdx !== idx));
+
         tokens[idx].setState(TokenState.Correct);
         setTokens([...tokens]);
         return true;
@@ -83,7 +110,7 @@ export default function Home() {
             <PageBox words={tokens}/>
             <div className="flex items-center place-content-evenly h-40">
                 {
-                    blankIdxes.map(idx => <ChoiceBtn
+                    shuffledBlankIdxes.map(idx => <ChoiceBtn
                         key={idx}
                         word={tokens[idx].getWord()}
                         guessBlank={guessBlank}

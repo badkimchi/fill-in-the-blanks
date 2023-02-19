@@ -31,3 +31,20 @@ test('choosing more items from a set returns all items', () => {
         expect(set.has(entry)).toBe(true);
     }
 });
+
+test('shuffling arrays maintain the same number of items', () => {
+    const origArr = [1, 2, 3, 4, 5, 6];
+    const newArr = Random.shuffle(origArr);
+    expect(origArr.length).toBe(newArr.length);
+});
+
+test('shuffling arrays maintains all items', () => {
+    const origArr = [1, 2, 3, 4, 5, 6];
+    const newArr = Random.shuffle(origArr);
+
+    const origSet = new Set(origArr);
+    const newSet = new Set(newArr);
+    for (const item of Array.from(origSet.values())) {
+        expect(newSet.has(item)).toBe(true);
+    }
+});
