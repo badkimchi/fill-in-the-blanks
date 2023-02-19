@@ -3,12 +3,19 @@ enum TokenType {
     Punctuation,
 }
 
+export enum TokenState {
+    Normal,
+    Blanked,
+    WrongGuess,
+    Correct,
+}
+
 const punctuations = [',', '.', ';', ':', '?']
 
 export class Token {
     private readonly type: TokenType = TokenType.Word;
     private readonly letters: string = '';
-    private blankedOut: boolean = false;
+    private state: TokenState = TokenState.Normal;
 
     constructor(token: string) {
         this.letters = token;
@@ -27,11 +34,11 @@ export class Token {
         return this.letters;
     }
 
-    public isBlankedOut(): boolean {
-        return this.blankedOut;
+    public getState(): TokenState {
+        return this.state;
     }
 
-    public setBlankedOut(blankedOut: boolean): void {
-        this.blankedOut = blankedOut;
+    public setState(state: TokenState): void {
+        this.state = state;
     }
 }
