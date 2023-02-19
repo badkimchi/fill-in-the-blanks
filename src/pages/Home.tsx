@@ -42,7 +42,7 @@ export default function Home() {
     /**
      * The number of words to be displayed as a blank in the page.
      */
-    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(5);
+    const desiredBlanksCnt = 4;
 
     /**
      * Guess the blank word.
@@ -123,7 +123,7 @@ export default function Home() {
             newParagraph += bookData[i];
         }
         setParagraph(newParagraph);
-    }, [page])
+    }, [page, maxPage])
 
     /**
      * When all blanks are filled, turn the page to the next.
