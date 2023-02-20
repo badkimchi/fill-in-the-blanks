@@ -34,6 +34,11 @@ export default function Home() {
     const linesPerPage = 3;
 
     /**
+     * manual shuffle trigger
+     */
+    const [shuffleCnt, setShuffleCnt] = useState<number>(0);
+
+    /**
      * if target characters per page is already satisfied,
      * no more lines will be read for the page
      * even if the linesPerPage is higher than actual lines that were read.
@@ -132,7 +137,7 @@ export default function Home() {
         setBlankIdxes([...tokenIdxes]);
         setShuffledBlankIdxes(Random.shuffle([...tokenIdxes]));
         setTokens(newTokens);
-    }, [desiredBlanksCnt, paragraph]);
+    }, [desiredBlanksCnt, paragraph, shuffleCnt]);
 
     /**
      * When page is changed, read new lines into the paragraph
@@ -176,6 +181,13 @@ export default function Home() {
                         }}
                 >
                     Reset
+                </button>
+                <button className={'rounded-2xl bg-green-300 text-black h-6 w-20 text-xs'}
+                        onClick={() => {
+                            setShuffleCnt(shuffleCnt + 1);
+                        }}
+                >
+                    Shuffle
                 </button>
             </div>
             <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
