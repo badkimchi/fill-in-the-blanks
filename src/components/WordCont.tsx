@@ -9,38 +9,48 @@ interface wordBoxProps {
 }
 
 export const WordCont: React.FC<wordBoxProps> = ({word, inQuestion}) => {
-    const baseStyle = 'inline-block ml-2.5 mb-1 h-8 inline-flex items-center justify-center rounded-md py-3 ';
+    const baseStyle = 'h-8 inline-flex items-center justify-center rounded-md ';
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
     if (word.getState() === TokenState.Blanked) {
-        return <React.Fragment>
+        return <PunctuationsWrapper word={word}>
             <div className={baseStyle + ' w-40 bg-white' + markNextInQuestion}>
                 ???
             </div>
-            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
-        </React.Fragment>
+        </PunctuationsWrapper>
     }
     if (word.getState() === TokenState.WrongGuess) {
-        return <React.Fragment>
+        return <PunctuationsWrapper word={word}>
             <div className={baseStyle + ' w-40 bg-red-300 border-solid border-2 border-red-200'}>
                 ???
             </div>
-            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
-        </React.Fragment>
+        </PunctuationsWrapper>
     }
     if (word.getState() === TokenState.Correct) {
-        return <React.Fragment>
+        return <PunctuationsWrapper word={word}>
             <div className={baseStyle + ' w-40 bg-white text-black border-solid border-2 border-green-200'}>
                 {word.getWord()}
             </div>
-            {word.endsWithPunctuation() ? word.getLastLetter() : ''}
-        </React.Fragment>
+        </PunctuationsWrapper>
     }
 
-    return <React.Fragment>
+    return <PunctuationsWrapper word={word}>
         <div className={baseStyle}>
             {word.getWord()}
         </div>
-        {word.endsWithPunctuation() ? word.getLastLetter() : ''}
-    </React.Fragment>
+    </PunctuationsWrapper>
+}
+
+interface PunctuationsProps {
+    word: Token;
+    children: React.ReactNode
+}
+
+const PunctuationsWrapper: React.FC<PunctuationsProps> = ({word, children}) => {
+    const styl = 'inline-block ml-2.5 mb-1 inline-flex items-center ';
+    return <div className={styl}>
+        {word.startsWithPunctuation() ? word.getFirstLetter() : ''}
+        {children}
+        {word.endsWithPunctuation() ? word.getLastLetters() : ''}
+    </div>
 }
