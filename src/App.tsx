@@ -7,7 +7,7 @@ export default function App() {
     return (
         <main className={'font-mono text-white container mx-auto'}>
             <header className={'h-20 flex justify-center items-center text-xl font-bold'}>
-                Fill In The Blanks Generator
+                Fill In The Blanks
             </header>
 
             <Routes>
