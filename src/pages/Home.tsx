@@ -168,7 +168,7 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <div className={'flex space-x-6 mb-2 h-8 items-center'}>
+            <div className={'flex space-x-6 mb-2 h-8 items-center justify-center'}>
                 <div>
                     Progress {(line * 100 / bookData?.length).toFixed(2)}%
                 </div>
@@ -191,7 +191,7 @@ export default function Home() {
                 </button>
             </div>
             <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
-            <div className="mt-2 flex items-center justify-around flex-wrap min-h-[16vh]">
+            <div className="mt-2 flex items-center justify-center space-x-2 flex-wrap min-h-[16vh]">
                 {
                     shuffledBlankIdxes.map(idx => <ChoiceBtn
                         key={idx}
