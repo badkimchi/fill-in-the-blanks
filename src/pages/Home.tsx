@@ -12,6 +12,7 @@ const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when 
     'his father.';
 
 const bookData = book.text.split('\n').filter(t => t !== '');
+const lineKey = 'currentLine';
 
 export default function Home() {
 
@@ -23,7 +24,7 @@ export default function Home() {
     /**
      * Line number offset in the book.
      */
-    const [line, setLine] = useState<number>(0);
+    const [line, setLine] = useState<number>(parseInt(localStorage.getItem(lineKey) || '0'));
 
     const endLineNumber = bookData?.length;
 
@@ -157,10 +158,26 @@ export default function Home() {
                 setLine(line => line + linesPerPage);
             }, 500)
         }
+        localStorage.setItem(lineKey, String(line))
     }, [blankIdxes, line])
 
     return (
         <React.Fragment>
+            <div className={'flex space-x-6 mb-2 h-8 items-center'}>
+                <div>
+                    Progress {(line * 100 / bookData?.length).toFixed(2)}%
+                </div>
+                <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
+                        onClick={() => {
+                            const confirmed = window.confirm('reset back to original lose progress?');
+                            if (confirmed) {
+                                setLine(0);
+                            }
+                        }}
+                >
+                    Reset
+                </button>
+            </div>
             <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
             <div className="mt-2 flex items-center justify-around flex-wrap min-h-[16vh]">
                 {
