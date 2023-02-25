@@ -13,6 +13,7 @@ const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when 
 
 const bookData = book.text.split('\n').filter(t => t !== '');
 const lineKey = 'currentLine';
+const blankKey = 'desiredBlanksCnt';
 
 export default function Home() {
 
@@ -67,7 +68,7 @@ export default function Home() {
     /**
      * The number of words to be displayed as a blank in the page.
      */
-    const desiredBlanksCnt = 4;
+    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(parseInt(localStorage.getItem(blankKey) || '4'));
 
     /**
      * Guess the blank word.
@@ -168,7 +169,7 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <div className={'flex space-x-6 mb-2 h-8 items-center justify-center' +
+            <div className={'flex space-x-3 mb-2 h-8 items-center justify-center' +
                 ''}>
                 <div>
                     Progress {(line * 100 / bookData?.length).toFixed(2)}%
@@ -190,6 +191,18 @@ export default function Home() {
                 >
                     Shuffle
                 </button>
+                <select value={desiredBlanksCnt} className={'rounded-2xl h-6 w-30 bg-slate-300 text-black text-xs'}
+                        onChange={(e) => {
+                            const cnt = parseInt(e.currentTarget.value);
+                            setDesiredBlanksCnt(cnt);
+                            localStorage.setItem(blankKey, String(cnt));
+                        }}
+                >
+                    {
+                        [3, 4, 5, 6, 7, 8, 9, 10].map((num, idx) =>
+                            <option value={num} key={idx}>{num} blanks</option>)
+                    }
+                </select>
             </div>
             <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
             <div className="mt-2 flex items-center justify-center space-x-2 flex-wrap min-h-[16vh]">
