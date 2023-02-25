@@ -4,6 +4,7 @@ import {Token, TokenState} from "../classes/Token";
 import {Random} from "../classes/Random";
 import {ChoiceBtn} from "../components/ChoiceBtn";
 import book from "../assets/books/arabian_nights.json";
+import {useNavigate} from "react-router-dom";
 
 const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when he first came to his crown, in order to\n' +
     'obtain a knowledge of affairs, took great pleasure in night excursions, attended by a trusty minister.\n' +
@@ -27,7 +28,7 @@ export default function Home() {
      */
     const [line, setLine] = useState<number>(parseInt(localStorage.getItem(lineKey) || '0'));
 
-    const endLineNumber = bookData?.length;
+    const endLineNumber = bookData?.length - 1;
 
     /**
      * # of lines that will be displayed at a page at a time.
@@ -60,6 +61,11 @@ export default function Home() {
     const [blankIdxes, setBlankIdxes] = useState<Array<number>>([0]);
 
     /**
+     * set to true when the end of the book is reached and there are no remaining blanks.
+     */
+    const [completed, setCompleted] = useState<boolean>(false);
+
+    /**
      * maintain a separate shuffled indices of the blanked out words
      * to generate word choices for guessing.
      */
@@ -69,6 +75,8 @@ export default function Home() {
      * The number of words to be displayed as a blank in the page.
      */
     const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(parseInt(localStorage.getItem(blankKey) || '4'));
+
+    const navigate = useNavigate();
 
     /**
      * Guess the blank word.
@@ -145,7 +153,7 @@ export default function Home() {
      */
     useEffect(() => {
         let newParagraph = '';
-        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber); i++) {
+        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber + 1); i++) {
             newParagraph += bookData[i];
             if (newParagraph.length >= targetCharactersPerPage) {
                 break;
@@ -158,14 +166,40 @@ export default function Home() {
      * When all blanks are filled, turn the page to the next.
      */
     useEffect(() => {
-        if (blankIdxes.length === 0) {
-            setBlankIdxes([0])
-            setTimeout(() => {
-                setLine(line => line + linesPerPage);
-            }, 500)
+        if (blankIdxes.length > 0) {
+            return;
         }
+        if (line === endLineNumber) {
+            setCompleted(true);
+            return;
+        }
+        setBlankIdxes([0])
+        setTimeout(() => {
+            setLine(line => line + linesPerPage);
+        }, 500)
         localStorage.setItem(lineKey, String(line))
-    }, [blankIdxes, line])
+    }, [blankIdxes, line, endLineNumber])
+
+
+    if (completed) {
+        return (
+            <React.Fragment>
+                <div className={'flex space-x-3 mb-2 h-8 items-center justify-center' +
+                    ''}>
+                    <div>
+                        Congratulations, You have completed the book!
+                    </div>
+                    <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
+                            onClick={() => {
+                                navigate('/')
+                            }}
+                    >
+                        Go Back
+                    </button>
+                </div>
+            </React.Fragment>
+        )
+    }
 
     return (
         <React.Fragment>
