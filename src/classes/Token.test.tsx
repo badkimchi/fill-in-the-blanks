@@ -20,6 +20,7 @@ test.each([
     ['normal'],
     ['"some"'],
     ['"some,"'],
+    ["sisters'"],
     ['"some!"'],
     ["Jake's"],
     ["magic-word"],

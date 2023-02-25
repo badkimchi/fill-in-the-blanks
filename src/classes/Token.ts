@@ -26,7 +26,7 @@ export class Token {
 
     private static isSpecialCharacter(char: string): boolean {
         if (!char || char.length === 0) {
-            // return false;
+            return false;
         }
         return char.match(/^[^a-zA-Z0-9]+$/) !== null;
     }
@@ -43,7 +43,7 @@ export class Token {
     }
 
     public getEndingPunctuation(): string {
-        if (!this.endsWithPunctuation()) {
+        if (!this.endsWithPunctuation() || this.letters[this.letters?.length - 1] === "'") {
             return '';
         }
 
