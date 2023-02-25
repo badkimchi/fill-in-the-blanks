@@ -15,13 +15,14 @@ export class Token {
     private readonly letters: string = '';
     private state: TokenState = TokenState.Normal;
 
-    constructor(token: string) {
+    constructor(token: string, state?: TokenState) {
         this.letters = token;
         if (token.length === 1 && Token.isSpecialCharacter(token)) {
             this.type = TokenType.Punctuation;
         } else {
             this.type = TokenType.Word;
         }
+        this.state = state || this.state;
     }
 
     private static isSpecialCharacter(char: string): boolean {

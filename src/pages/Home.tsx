@@ -1,251 +1,61 @@
 import React, {useEffect, useState} from "react";
-import {ParagraphCont} from "../components/ParagraphCont";
+import {WordContainer} from "../components/WordContainer";
 import {Token, TokenState} from "../classes/Token";
-import {Random} from "../classes/Random";
-import {ChoiceBtn} from "../components/ChoiceBtn";
-import book from "../assets/books/arabian_nights.json";
 import {useNavigate} from "react-router-dom";
 
-const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when he first came to his crown, in order to\n' +
-    'obtain a knowledge of affairs, took great pleasure in night excursions, attended by a trusty minister.\n' +
-    'He often walked in disguise through the city, and met with many adventures, one of the most remarkable\n' +
-    'of which happened to him upon his first ramble, which was not long after his accession to the throne of\n' +
-    'his father.';
-
-const bookData = book.text.split('\n').filter(t => t !== '');
-const lineKey = 'currentLine';
-const blankKey = 'desiredBlanksCnt';
+const fullSentence: Array<Token> = [new Token('There'), new Token('was'), new Token('an'),
+    new Token('emperor'), new Token('of'), new Token('Persia'),
+    new Token('named'), new Token('Kosrouschah,'), new Token('who,'),
+    new Token('when'), new Token('he'), new Token('first'),
+    new Token('came'), new Token('to'), new Token('his'),
+    new Token('crown,', TokenState.Blanked), new Token('in'), new Token('order'),
+    new Token('to'), new Token('gain'), new Token('knowledge'),
+    new Token('of'), new Token('affairs,'), new Token('took'),
+    new Token('great'), new Token('pleasure'), new Token('in'),
+    new Token('night'), new Token('excursions.', TokenState.Blanked),
+]
 
 export default function Home() {
-
-    /**
-     * Whole text of data to be displayed at the current page.
-     */
-    const [paragraph, setParagraph] = useState<string>(exampleTxt);
-
-    /**
-     * Line number offset in the book.
-     */
-    const [line, setLine] = useState<number>(parseInt(localStorage.getItem(lineKey) || '0'));
-
-    const endLineNumber = bookData?.length - 1;
-
-    /**
-     * # of lines that will be displayed at a page at a time.
-     */
-    const linesPerPage = 3;
-
-    /**
-     * manual shuffle trigger
-     */
-    const [shuffleCnt, setShuffleCnt] = useState<number>(0);
-
-    /**
-     * if target characters per page is already satisfied,
-     * no more lines will be read for the page
-     * even if the linesPerPage is higher than actual lines that were read.
-     */
-    const targetCharactersPerPage = 250;
-
-    /**
-     * List of words and punctuations that make up the page in a book.
-     */
-    const [tokens, setTokens] = useState<Array<Token>>([]);
-
-    /**
-     * indices of blanked out words in tokens array.
-     * they are in the same order as the words appear in the paragraph.
-     * they are used to check if the guess is correct.
-     *
-     */
-    const [blankIdxes, setBlankIdxes] = useState<Array<number>>([0]);
-
-    /**
-     * set to true when the end of the book is reached and there are no remaining blanks.
-     */
-    const [completed, setCompleted] = useState<boolean>(false);
-
-    /**
-     * maintain a separate shuffled indices of the blanked out words
-     * to generate word choices for guessing.
-     */
-    const [shuffledBlankIdxes, setShuffledBlankIdxes] = useState<Array<number>>([]);
-
-    /**
-     * The number of words to be displayed as a blank in the page.
-     */
-    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(parseInt(localStorage.getItem(blankKey) || '4'));
-
     const navigate = useNavigate();
+    const [displayedSentence, setDisplayedSentence] = useState<Array<Token>>([
+        new Token('There'), new Token('was')]);
 
     /**
-     * Guess the blank word.
-     * The state of the box will change depending on the correctness of the answer.
-     *
-     * @param word
-     */
-    const guessBlank = (word: string): boolean => {
-        const idx = blankIdxes[0];
-
-        // the button for this action should be hidden to prevent this case.
-        // checking idx here removes warning for using it as an index in the next block.
-        if (idx === undefined) {
-            console.error('no more blanked words!')
-            return false;
-        }
-
-        // if the guess is wrong, mark it.
-        if (word !== tokens[idx].getWord()) {
-            tokens[idx].setState(TokenState.WrongGuess);
-            setTokens([...tokens]);
-            return false;
-        }
-
-        // remove the already guessed answer from re-appearing in the choices
-        blankIdxes.shift()
-        setBlankIdxes([...blankIdxes]);
-        setShuffledBlankIdxes(shuffledBlankIdxes.filter(shuIdx => shuIdx !== idx));
-
-        tokens[idx].setState(TokenState.Correct);
-        setTokens([...tokens]);
-        return true;
-    }
-
-
-    /**
-     * Turn paragraphs into tokens
+     * Gradually reveal the full sentence by taking one word at a time.
      */
     useEffect(() => {
-        // parse paragraphs into tokens
-        const tempTokens = paragraph
-            .split(/[\n\t ]/)
-            .filter(t => t.trim() !== '')
-            .map(t => new Token(t));
-
-        // using unique words to avoid high frequency words
-        const uniqueWords = new Set<string>(tempTokens
-            .filter(t => t.isWord())
-            .map(t => t.getWord()));
-
-        const blanksCnt = Math.min(uniqueWords.size, desiredBlanksCnt);
-        const blankedWords = Random.chooseManyFrom(uniqueWords, blanksCnt);
-        const tokenIdxes: Array<number> = [];
-
-        // blank out the token if it is a blanked word.
-        const newTokens = tempTokens.map((t, idx) => {
-            if (blankedWords.has(t.getWord())) {
-                t.setState(TokenState.Blanked);
-                tokenIdxes.push(idx);
-
-                // ensure that we only blank out one (first) occurrence.
-                blankedWords.delete(t.getWord());
-                return t;
+        const wordDisplayInterval = setInterval(() => {
+            if (displayedSentence.length < fullSentence.length) {
+                setDisplayedSentence(displayedSentence =>
+                    [...displayedSentence, fullSentence[displayedSentence.length]])
             }
-            return t;
-        })
-        setBlankIdxes([...tokenIdxes]);
-        setShuffledBlankIdxes(Random.shuffle([...tokenIdxes]));
-        setTokens(newTokens);
-    }, [desiredBlanksCnt, paragraph, shuffleCnt]);
+        }, 200);
 
-    /**
-     * When page is changed, read new lines into the paragraph
-     */
-    useEffect(() => {
-        let newParagraph = '';
-        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber + 1); i++) {
-            newParagraph += bookData[i];
-            if (newParagraph.length >= targetCharactersPerPage) {
-                break;
-            }
+        return () => {
+            clearInterval(wordDisplayInterval);
         }
-        setParagraph(newParagraph);
-    }, [line, endLineNumber])
-
-    /**
-     * When all blanks are filled, turn the page to the next.
-     */
-    useEffect(() => {
-        if (blankIdxes.length > 0) {
-            return;
-        }
-        if (line === endLineNumber) {
-            setCompleted(true);
-            return;
-        }
-        setBlankIdxes([0])
-        setTimeout(() => {
-            setLine(line => line + linesPerPage);
-        }, 500)
-        localStorage.setItem(lineKey, String(line))
-    }, [blankIdxes, line, endLineNumber])
-
-
-    if (completed) {
-        return (
-            <React.Fragment>
-                <div className={'flex space-x-3 mb-2 h-8 items-center justify-center' +
-                    ''}>
-                    <div>
-                        Congratulations, You have completed the book!
-                    </div>
-                    <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
-                            onClick={() => {
-                                navigate('/')
-                            }}
-                    >
-                        Go Back
-                    </button>
-                </div>
-            </React.Fragment>
-        )
-    }
+    }, [])
 
     return (
         <React.Fragment>
-            <div className={'flex space-x-3 mb-2 h-8 items-center justify-center' +
-                ''}>
-                <div>
-                    Progress {(line * 100 / bookData?.length).toFixed(2)}%
-                </div>
-                <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
-                        onClick={() => {
-                            const confirmed = window.confirm('do you want to reset your progress?');
-                            if (confirmed) {
-                                setLine(0);
-                            }
-                        }}
-                >
-                    Reset
-                </button>
-                <button className={'rounded-2xl bg-green-300 text-black h-6 w-20 text-xs'}
-                        onClick={() => {
-                            setShuffleCnt(shuffleCnt + 1);
-                        }}
-                >
-                    Shuffle
-                </button>
-                <select value={desiredBlanksCnt} className={'rounded-2xl h-6 w-30 bg-slate-300 text-black text-xs'}
-                        onChange={(e) => {
-                            const cnt = parseInt(e.currentTarget.value);
-                            setDesiredBlanksCnt(cnt);
-                            localStorage.setItem(blankKey, String(cnt));
-                        }}
-                >
+            <div className={'flex mt-20 flex-col space-x-3 mb-2 h-8 items-center justify-center'}>
+                <div className={'mt-20'}>
                     {
-                        [3, 4, 5, 6, 7, 8, 9, 10].map((num, idx) =>
-                            <option value={num} key={idx}>{num} blanks</option>)
+                        displayedSentence.map((word, idx) =>
+                            <WordContainer key={idx} word={word} inQuestion={false}/>)
                     }
-                </select>
-            </div>
-            <ParagraphCont words={tokens} nextBlankIdx={blankIdxes[0] || -1}/>
-            <div className="mt-2 flex items-center justify-center space-x-2 flex-wrap min-h-[16vh]">
+                </div>
                 {
-                    shuffledBlankIdxes.map(idx => <ChoiceBtn
-                        key={idx}
-                        word={tokens[idx].getWord()}
-                        guessBlank={guessBlank}
-                    />)
+                    <div className={'mt-10 bg-transparent hover:bg-blue-300 text-blue-300 font-semibold ' +
+                        'hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded ' +
+                        'transition ease-in-out duration-100'}
+                    >
+                        <button onClick={() => {
+                            navigate('/list');
+                        }}>
+                            Get Started
+                        </button>
+                    </div>
                 }
             </div>
         </React.Fragment>

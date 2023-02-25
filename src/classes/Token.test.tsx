@@ -30,3 +30,19 @@ test.each([
     const fullWord = token.getStartingPunctuation() + token.getWord() + token.getEndingPunctuation();
     expect(fullWord).toBe(letters);
 });
+
+test.each([
+    ['"some"', '"'],
+])('starting punctuation is extracted correctly', (letters, punctuation) => {
+    const token = new Token(letters);
+    expect(token.getStartingPunctuation()).toBe(punctuation);
+})
+
+test.each([
+    ['"some."', '."'],
+    ['"some,"', ',"'],
+    ['"some!', '!'],
+])('ending punctuation is extracted correctly', (letters, punctuation) => {
+    const token = new Token(letters);
+    expect(token.getEndingPunctuation()).toBe(punctuation);
+})

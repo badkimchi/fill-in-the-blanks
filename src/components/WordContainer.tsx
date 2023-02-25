@@ -9,6 +9,10 @@ interface wordBoxProps {
 }
 
 export const WordContainer: React.FC<wordBoxProps> = ({word, inQuestion}) => {
+    if (word === undefined) {
+        return <React.Fragment/>;
+    }
+
     const baseStyle = 'h-8 inline-flex items-center justify-center rounded-md ';
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
