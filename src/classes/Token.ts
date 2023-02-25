@@ -35,19 +35,18 @@ export class Token {
         return this.type === TokenType.Word;
     }
 
+    /**
+     * returns the word without the punctuations at the end of words
+     */
     public getWord(): string {
-        return this.letters.replace(/[^a-zA-Z0-9 ]/g, '');
+        return this.letters.replace(/[^a-zA-Z0-9\\'-]/g, '');
     }
 
-    public endsWithPunctuation(): boolean {
-        return Token.isSpecialCharacter(this.letters[this.letters.length - 1]);
-    }
+    public getEndingPunctuation(): string {
+        if (!this.endsWithPunctuation()) {
+            return '';
+        }
 
-    public startsWithPunctuation(): boolean {
-        return Token.isSpecialCharacter(this.letters[0]);
-    }
-
-    public getLastLetters(): string {
         let lastLetters = '';
         for (let i = this.letters.length - 1; i > 0; i--) {
             if (Token.isSpecialCharacter(this.letters[i])) {
@@ -59,8 +58,8 @@ export class Token {
         return lastLetters;
     }
 
-    public getFirstLetter(): string {
-        return this.letters[0];
+    public getStartingPunctuation(): string {
+        return this.startsWithPunctuation() ? this.letters[0] : '';
     }
 
     public getState(): TokenState {
@@ -69,5 +68,13 @@ export class Token {
 
     public setState(state: TokenState): void {
         this.state = state;
+    }
+
+    private endsWithPunctuation(): boolean {
+        return Token.isSpecialCharacter(this.letters[this.letters.length - 1]);
+    }
+
+    private startsWithPunctuation(): boolean {
+        return Token.isSpecialCharacter(this.letters[0]);
     }
 }

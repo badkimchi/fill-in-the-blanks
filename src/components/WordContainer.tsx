@@ -8,7 +8,7 @@ interface wordBoxProps {
     inQuestion: boolean;
 }
 
-export const WordCont: React.FC<wordBoxProps> = ({word, inQuestion}) => {
+export const WordContainer: React.FC<wordBoxProps> = ({word, inQuestion}) => {
     const baseStyle = 'h-8 inline-flex items-center justify-center rounded-md ';
     const markNextInQuestion = (inQuestion ? ' border-solid border-4 border-red-500' : '');
 
@@ -49,8 +49,8 @@ interface PunctuationsProps {
 const PunctuationsWrapper: React.FC<PunctuationsProps> = ({word, children}) => {
     const styl = 'inline-block ml-2.5 mb-1 inline-flex items-center ';
     return <div className={styl}>
-        {word.startsWithPunctuation() ? word.getFirstLetter() : ''}
+        {word.getStartingPunctuation()}
         {children}
-        {word.endsWithPunctuation() ? word.getLastLetters() : ''}
+        {word.getEndingPunctuation()}
     </div>
 }

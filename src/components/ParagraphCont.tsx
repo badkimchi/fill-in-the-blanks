@@ -1,6 +1,6 @@
 import React from "react";
 import {Token} from "../classes/Token";
-import {WordCont} from "./WordCont";
+import {WordContainer} from "./WordContainer";
 
 interface choiceBtnProps {
     words: Array<Token>;
@@ -16,7 +16,7 @@ export const ParagraphCont: React.FC<choiceBtnProps> = ({words, nextBlankIdx}) =
     return <div className={txtBox}>
         {
             words.map((word, idx) =>
-                <WordCont key={idx} word={word} inQuestion={idx === nextBlankIdx}/>)
+                <WordContainer key={idx} word={word} inQuestion={idx === nextBlankIdx}/>)
         }
     </div>
 }

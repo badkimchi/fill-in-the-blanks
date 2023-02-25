@@ -168,13 +168,14 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <div className={'flex space-x-6 mb-2 h-8 items-center justify-center'}>
+            <div className={'flex space-x-6 mb-2 h-8 items-center justify-center' +
+                ''}>
                 <div>
                     Progress {(line * 100 / bookData?.length).toFixed(2)}%
                 </div>
                 <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
                         onClick={() => {
-                            const confirmed = window.confirm('reset back to original lose progress?');
+                            const confirmed = window.confirm('do you want to reset your progress?');
                             if (confirmed) {
                                 setLine(0);
                             }

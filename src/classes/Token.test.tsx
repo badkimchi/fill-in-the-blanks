@@ -15,3 +15,17 @@ test('word is blanked out', () => {
     token.setState(TokenState.Blanked);
     expect(token.getState()).toBe(TokenState.Blanked);
 });
+
+test.each([
+    ['normal'],
+    ['"some"'],
+    ['"some,"'],
+    ['"some!"'],
+    ["Jake's"],
+    ["magic-word"],
+])('normal output word is same as the original', (letters) => {
+    const token = new Token(letters);
+    token.setState(TokenState.Normal);
+    const fullWord = token.getStartingPunctuation() + token.getWord() + token.getEndingPunctuation();
+    expect(fullWord).toBe(letters);
+});

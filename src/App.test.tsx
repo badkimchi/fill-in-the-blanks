@@ -7,6 +7,6 @@ test('renders page', () => {
     render(<MemoryRouter>
         <App/>
     </MemoryRouter>);
-    const linkElement = screen.getByText(/Fill In The Blanks Generator/i);
+    const linkElement = screen.getByText(/Fill In The Blanks/i);
     expect(linkElement).toBeInTheDocument();
 });
