@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Home from "./pages/Home";
-import BookReader from "./pages/BookReader";
-import BookList from "./pages/BookList";
+import {BookReader} from "./pages/BookReader";
+import {BookList} from "./pages/BookList";
+import {BookInfo} from "./classes/BookInfo";
 
 export default function App() {
     const navigate = useNavigate();
+    const [books, setBooks] = useState<Array<BookInfo>>([]);
+    useEffect(() => {
+        fetch('/books/list.json')
+            .then(res => res.json())
+            .then(data => setBooks(data.books))
+    }, [])
+
     return (
         <main className={'font-mono text-white container mx-auto'}>
             <header
@@ -16,14 +24,13 @@ export default function App() {
                     navigate('/');
                 }}
             >
-
                 Fill In The Blanks
             </header>
 
             <Routes>
                 <Route path='/' element={<Home/>}/>
-                <Route path='/list' element={<BookList/>}/>
-                <Route path='/book/:bookName' element={<BookReader/>}/>
+                <Route path='/list' element={<BookList books={books}/>}/>
+                <Route path='/books/:bookId' element={<BookReader books={books}/>}/>
             </Routes>
         </main>
     );

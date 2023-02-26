@@ -8,12 +8,23 @@ import LoadingMessage from "../components/LoadingMessage";
 import ErrorMessage from "../components/ErrorMessage";
 import {useParams} from "react-router-dom";
 import {UserState} from "../classes/UserState";
+import {BookInfo} from "../classes/BookInfo";
 
-export default function BookReader() {
+interface props {
+    books: Array<BookInfo>
+}
+
+export const BookReader: React.FC<props> = ({books}) => {
     /**
      * name of the current book loaded on in the reader
      */
-    const {bookName} = useParams();
+    const {bookId} = useParams();
+
+    /**
+     * book with the given book id
+     */
+    const [book, setBook] = useState<BookInfo>(
+        new BookInfo('default', 'defaultId', 'defaultImg', 'defaultAlt', 0));
 
     /**
      * book is ready to be rendered to the screen.
@@ -38,7 +49,7 @@ export default function BookReader() {
     /**
      * Line number offset in the book.
      */
-    const [line, setLine] = useState<number>(0);
+    const [line, setLine] = useState<number>(UserState.GetBookProgressLineNo(bookId));
 
     const endLineNumber = bookData?.length - 1;
 
@@ -126,7 +137,16 @@ export default function BookReader() {
      * Load the book from the server.
      */
     useEffect(() => {
-        fetch(`/books/${bookName}.json`)
+        const filteredBooks = books.filter(b => b.id === bookId);
+        if (books.length < 0) {
+            console.error('unable to find a matching book with the book id!')
+            setHasError(true);
+            return;
+        } else {
+            setBook(filteredBooks[0]);
+        }
+
+        fetch(`/books/${bookId}.json`)
             .then(res => res.json())
             .then(data => {
                 setBookData(data.text.split('\n').filter((t: string) => t !== ''))
@@ -136,7 +156,7 @@ export default function BookReader() {
                 console.error(err)
                 setHasError(true);
             })
-    }, [bookName])
+    }, [bookId, books])
 
     /**
      * Once book is loaded or when the page is turned, read new lines into the paragraph.
@@ -208,12 +228,11 @@ export default function BookReader() {
             return;
         }
         setBlankIdxes([0])
-        console.error('this')
         setTimeout(() => {
             setLine(line => line + linesPerPage);
         }, 500)
-        UserState.SaveBookProgress(bookName, line + linesPerPage);
-    }, [bookLoaded, bookName, blankIdxes, line, endLineNumber])
+        UserState.SaveBookProgress(bookId, line + linesPerPage);
+    }, [bookLoaded, bookId, blankIdxes, line, endLineNumber])
 
     if (hasError) {
         return <ErrorMessage/>
@@ -232,14 +251,14 @@ export default function BookReader() {
             <div className={'flex space-x-3 mb-2 h-8 items-center justify-center' +
                 ''}>
                 <div>
-                    Progress {(line * 100 / bookData?.length).toFixed(2)}%
+                    Progress {UserState.GetBookProgressPercentage(book)}
                 </div>
                 <button className={'rounded-2xl bg-red-300 text-black h-6 w-14 text-xs'}
                         onClick={() => {
                             const confirmed = window.confirm('do you want to reset your progress?');
                             if (confirmed) {
                                 setLine(0);
-                                UserState.ResetBookProgress(bookName)
+                                UserState.ResetBookProgress(bookId)
                             }
                         }}
                 >

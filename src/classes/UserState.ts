@@ -1,3 +1,5 @@
+import {BookInfo} from "./BookInfo";
+
 const bookKey = 'book_';
 const blanksKey = 'blanks_no';
 
@@ -30,16 +32,16 @@ export class UserState {
     /**
      * returns a line number that needs to be read next.
      *
-     * @param bookName
+     * @param bookId
      * @constructor
      */
-    public static GetBookProgress(bookName: string | undefined): number {
-        if (!bookName) {
+    public static GetBookProgressLineNo(bookId: string | undefined): number {
+        if (!bookId) {
             console.error('book name cannot be undefined!')
             return 0;
         }
 
-        let num = UserState.storage.getItem(bookKey + bookName);
+        let num = UserState.storage.getItem(bookKey + bookId);
         if (num) {
             return parseInt(num);
         }
@@ -48,32 +50,48 @@ export class UserState {
 
 
     /**
+     * returns progress in percentage
+     *
+     * @constructor
+     * @param book
+     */
+    public static GetBookProgressPercentage(book: BookInfo): string {
+        if (!book) {
+            return '0%';
+        }
+
+        const lineRead = UserState.GetBookProgressLineNo(book.id)
+        return (lineRead * 100 / book.lineCnt).toFixed(2) + '%'
+    }
+
+
+    /**
      * resets the current progress by the user for the book.
      *
-     * @param bookName
+     * @param bookId
      * @constructor
      */
-    public static ResetBookProgress(bookName: string | undefined): void {
-        if (!bookName) {
+    public static ResetBookProgress(bookId: string | undefined): void {
+        if (!bookId) {
             console.error('book name cannot be undefined!')
             return;
         }
-        UserState.storage.setItem(bookKey + bookName, '0');
+        UserState.storage.setItem(bookKey + bookId, '0');
     }
 
     /**
      * saves the line number that needs to be read next for the book.
      *
-     * @param bookName
+     * @param bookId
      * @param line
      * @constructor
      */
-    public static SaveBookProgress(bookName: string | undefined, line: number): void {
-        if (!bookName) {
+    public static SaveBookProgress(bookId: string | undefined, line: number): void {
+        if (!bookId) {
             console.error('book name cannot be undefined!')
             return;
         }
-        UserState.storage.setItem(bookKey + bookName, String(line));
+        UserState.storage.setItem(bookKey + bookId, String(line));
     }
 }
 
