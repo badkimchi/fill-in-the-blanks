@@ -16,22 +16,24 @@ export default function App() {
     }, [])
 
     return (
-        <main className={'font-mono text-white container mx-auto'}>
-            <header
-                className={'h-20 flex justify-center items-center text-xl font-bold ' +
-                    'cursor-pointer hover:text-emerald-500'}
-                onClick={() => {
-                    navigate('/');
-                }}
-            >
-                Fill In The Blanks
-            </header>
+        <main className="w-full h-screen bg-gradient-to-l from-slate-700 to-slate-800">
+            <div className={'font-mono text-white container mx-auto'}>
+                <header
+                    className={'h-20 flex justify-center items-center text-xl font-bold ' +
+                        'cursor-pointer hover:text-emerald-500'}
+                    onClick={() => {
+                        navigate('/');
+                    }}
+                >
+                    Fill In The Blanks
+                </header>
 
-            <Routes>
-                <Route path='/' element={<Home/>}/>
-                <Route path='/list' element={<BookList books={books}/>}/>
-                <Route path='/books/:bookId' element={<BookReader books={books}/>}/>
-            </Routes>
+                <Routes>
+                    <Route path='/' element={<Home/>}/>
+                    <Route path='/list' element={<BookList books={books}/>}/>
+                    <Route path='/books/:bookId' element={<BookReader books={books}/>}/>
+                </Routes>
+            </div>
         </main>
     );
 }
