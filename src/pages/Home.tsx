@@ -39,14 +39,14 @@ export default function Home() {
     return (
         <React.Fragment>
             <div className={'flex mt-20 flex-col space-x-3 mb-2 h-8 items-center justify-center'}>
-                <div className={'mt-20'}>
+                <div className={'mt-40'}>
                     {
                         displayedSentence.map((word, idx) =>
                             <WordContainer key={idx} word={word} inQuestion={false}/>)
                     }
                 </div>
                 {
-                    <div className={'mt-10 bg-transparent hover:bg-blue-300 text-blue-300 font-semibold ' +
+                    <div className={'mt-20 bg-transparent hover:bg-blue-300 text-blue-300 font-semibold ' +
                         'hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded ' +
                         'transition ease-in-out duration-100'}
                     >

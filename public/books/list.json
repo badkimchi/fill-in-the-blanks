@@ -3,9 +3,16 @@
     {
       "title": "Arabian Nights",
       "id": "1",
-      "imgUrl": "1.jpg",
-      "imgAlt": "Photo by Vera Davidova on Unsplash",
+      "imgUrl": "1.jpeg",
+      "imgAlt": "The Project Gutenberg",
       "lineCnt": 5010
+    },
+    {
+      "title": "The Last Oases",
+      "id": "2",
+      "imgUrl": "2.jpeg",
+      "imgAlt": "The Project Gutenberg",
+      "lineCnt": 3712
     }
   ]
 }

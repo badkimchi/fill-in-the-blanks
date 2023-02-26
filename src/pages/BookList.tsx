@@ -9,8 +9,8 @@ interface props {
 export const BookList: React.FC<props> = ({books}) => {
     return (
         <React.Fragment>
-            <div className={'flex mt-20 flex-col space-x-3 mb-2 h-8 items-center justify-center cursor-pointer'}>
-                <div className={'mt-20'}>
+            <div className={'flex flex-col space-x-3 mb-2 items-center justify-center cursor-pointer'}>
+                <div>
                     {
                         books?.map(book => <BookIntro key={book.id} book={book}/>)
                     }
