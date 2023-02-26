@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {Route, Routes, useNavigate} from "react-router-dom";
 import Home from "./pages/Home";
-import Book from "./pages/Book";
+import BookReader from "./pages/BookReader";
 import BookList from "./pages/BookList";
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
             <Routes>
                 <Route path='/' element={<Home/>}/>
                 <Route path='/list' element={<BookList/>}/>
-                <Route path='/book/:id' element={<Book/>}/>
+                <Route path='/book/:bookName' element={<BookReader/>}/>
             </Routes>
         </main>
     );

@@ -6,21 +6,19 @@ import {ChoiceBtn} from "../components/ChoiceBtn";
 import CompletedMessage from "../components/CompletedMessage";
 import LoadingMessage from "../components/LoadingMessage";
 import ErrorMessage from "../components/ErrorMessage";
+import {useParams} from "react-router-dom";
+import {UserState} from "../classes/UserState";
 
-const exampleTxt = 'There was an emperor of Persia named Kosrouschah, who, when he first came to his crown, in order to\n' +
-    'obtain a knowledge of affairs, took great pleasure in night excursions, attended by a trusty minister.\n' +
-    'He often walked in disguise through the city, and met with many adventures, one of the most remarkable\n' +
-    'of which happened to him upon his first ramble, which was not long after his accession to the throne of\n' +
-    'his father.';
+export default function BookReader() {
+    /**
+     * name of the current book loaded on in the reader
+     */
+    const {bookName} = useParams();
 
-const lineKey = 'currentLine';
-const blankKey = 'desiredBlanksCnt';
-
-export default function Book() {
     /**
      * book is ready to be rendered to the screen.
      */
-    const [ready, setReady] = useState<boolean>(false);
+    const [bookLoaded, setBookLoaded] = useState<boolean>(false);
 
     /**
      * Unable to display book due to an error.
@@ -35,12 +33,12 @@ export default function Book() {
     /**
      * Whole text of data to be displayed at the current page.
      */
-    const [paragraph, setParagraph] = useState<string>(exampleTxt);
+    const [paragraph, setParagraph] = useState<string>('');
 
     /**
      * Line number offset in the book.
      */
-    const [line, setLine] = useState<number>(parseInt(localStorage.getItem(lineKey) || '0'));
+    const [line, setLine] = useState<number>(0);
 
     const endLineNumber = bookData?.length - 1;
 
@@ -88,7 +86,7 @@ export default function Book() {
     /**
      * The number of words to be displayed as a blank in the page.
      */
-    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(parseInt(localStorage.getItem(blankKey) || '4'));
+    const [desiredBlanksCnt, setDesiredBlanksCnt] = useState<number>(UserState.GetBlanksCnt());
 
 
     /**
@@ -124,24 +122,47 @@ export default function Book() {
         return true;
     }
 
+    /**
+     * Load the book from the server.
+     */
     useEffect(() => {
-        fetch('/books/1.json')
+        fetch(`/books/${bookName}.json`)
             .then(res => res.json())
             .then(data => {
                 setBookData(data.text.split('\n').filter((t: string) => t !== ''))
-                setReady(true);
+                setBookLoaded(true);
             })
             .catch(err => {
                 console.error(err)
                 setHasError(true);
             })
-    }, [])
-
+    }, [bookName])
 
     /**
-     * Turn paragraphs into tokens
+     * Once book is loaded or when the page is turned, read new lines into the paragraph.
      */
     useEffect(() => {
+        if (!bookLoaded) {
+            return;
+        }
+        let newParagraph = '';
+        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber + 1); i++) {
+            newParagraph += bookData[i];
+            if (newParagraph.length >= targetCharactersPerPage) {
+                break;
+            }
+        }
+        setParagraph(newParagraph);
+    }, [bookLoaded, bookData, line, endLineNumber])
+
+    /**
+     * Once a new paragraph is loaded, generate new word tokens.
+     */
+    useEffect(() => {
+        if (!bookLoaded || paragraph.length === 0) {
+            return;
+        }
+
         // parse paragraphs into tokens
         const tempTokens = paragraph
             .split(/[\n\t ]/)
@@ -172,27 +193,14 @@ export default function Book() {
         setBlankIdxes([...tokenIdxes]);
         setShuffledBlankIdxes(Random.shuffle([...tokenIdxes]));
         setTokens(newTokens);
-    }, [desiredBlanksCnt, paragraph, shuffleCnt]);
+    }, [bookLoaded, desiredBlanksCnt, paragraph, shuffleCnt]);
 
-    /**
-     * When page is changed, read new lines into the paragraph
-     */
-    useEffect(() => {
-        let newParagraph = '';
-        for (let i = line; i < Math.min(line + linesPerPage, endLineNumber + 1); i++) {
-            newParagraph += bookData[i];
-            if (newParagraph.length >= targetCharactersPerPage) {
-                break;
-            }
-        }
-        setParagraph(newParagraph);
-    }, [line, endLineNumber])
 
     /**
      * When all blanks are filled, turn the page to the next.
      */
     useEffect(() => {
-        if (blankIdxes.length > 0) {
+        if (blankIdxes.length > 0 || !bookLoaded) {
             return;
         }
         if (line === endLineNumber) {
@@ -200,17 +208,18 @@ export default function Book() {
             return;
         }
         setBlankIdxes([0])
+        console.error('this')
         setTimeout(() => {
             setLine(line => line + linesPerPage);
         }, 500)
-        localStorage.setItem(lineKey, String(line))
-    }, [blankIdxes, line, endLineNumber])
+        UserState.SaveBookProgress(bookName, line + linesPerPage);
+    }, [bookLoaded, bookName, blankIdxes, line, endLineNumber])
 
     if (hasError) {
         return <ErrorMessage/>
     }
 
-    if (!ready) {
+    if (!bookLoaded) {
         return <LoadingMessage/>
     }
 
@@ -230,6 +239,7 @@ export default function Book() {
                             const confirmed = window.confirm('do you want to reset your progress?');
                             if (confirmed) {
                                 setLine(0);
+                                UserState.ResetBookProgress(bookName)
                             }
                         }}
                 >
@@ -246,7 +256,7 @@ export default function Book() {
                         onChange={(e) => {
                             const cnt = parseInt(e.currentTarget.value);
                             setDesiredBlanksCnt(cnt);
-                            localStorage.setItem(blankKey, String(cnt));
+                            UserState.SaveBlanksCnt(cnt)
                         }}
                 >
                     {
