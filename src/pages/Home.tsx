@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {WordContainer} from "../components/WordContainer";
 import {Token, TokenState} from "../classes/Token";
 import {useNavigate} from "react-router-dom";
+import {Btn} from "../components/Btn";
 
 const fullSentence: Array<Token> = [new Token('There'), new Token('was'), new Token('an'),
     new Token('emperor'), new Token('of'), new Token('Persia'),
@@ -34,7 +35,7 @@ export default function Home() {
         return () => {
             clearInterval(wordDisplayInterval);
         }
-    }, [])
+    }, [displayedSentence.length])
 
     return (
         <React.Fragment>
@@ -45,18 +46,11 @@ export default function Home() {
                             <WordContainer key={idx} word={word} inQuestion={false}/>)
                     }
                 </div>
-                {
-                    <div className={'mt-20 bg-transparent hover:bg-blue-300 text-blue-300 font-semibold ' +
-                        'hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded ' +
-                        'transition ease-in-out duration-100'}
-                    >
-                        <button onClick={() => {
-                            navigate('/list');
-                        }}>
-                            Get Started
-                        </button>
-                    </div>
-                }
+                <Btn label={'Get Started'}
+                     disabled={false}
+                     onClick={() => {
+                         navigate('/books/list');
+                     }}/>
             </div>
         </React.Fragment>
     )

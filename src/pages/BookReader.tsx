@@ -9,6 +9,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import {useParams} from "react-router-dom";
 import {UserState} from "../classes/UserState";
 import {BookInfo} from "../classes/BookInfo";
+import {BookRepository} from "../classes/BookRepository";
 
 interface props {
     books: Array<BookInfo>
@@ -24,7 +25,8 @@ export const BookReader: React.FC<props> = ({books}) => {
      * book with the given book id
      */
     const [book, setBook] = useState<BookInfo>(
-        new BookInfo('default', 'defaultId', 'defaultImg', 'defaultAlt', 0));
+        new BookInfo('default', 'defaultId', true,
+            'defaultImg', 'defaultAlt', 0));
 
     /**
      * book is ready to be rendered to the screen.
@@ -138,7 +140,7 @@ export const BookReader: React.FC<props> = ({books}) => {
      */
     useEffect(() => {
         const filteredBooks = books.filter(b => b.id === bookId);
-        if (books.length < 0) {
+        if (books.length < 0 || !bookId) {
             console.error('unable to find a matching book with the book id!')
             setHasError(true);
             return;
@@ -146,10 +148,10 @@ export const BookReader: React.FC<props> = ({books}) => {
             setBook(filteredBooks[0]);
         }
 
-        fetch(`/books/${bookId}.json`)
-            .then(res => res.json())
+        BookRepository
+            .GetBookData(bookId)
             .then(data => {
-                setBookData(data.text.split('\n').filter((t: string) => t !== ''))
+                setBookData(data);
                 setBookLoaded(true);
             })
             .catch(err => {

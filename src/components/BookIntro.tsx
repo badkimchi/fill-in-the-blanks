@@ -15,7 +15,8 @@ export const BookIntro: React.FC<BookIntroProps> = ({book}) => {
                 'hover:skew-y-3 hover:scale-150 hover:text-green-300'}
                  onClick={() => navigate(`/books/${book.id}`)}>
                 <div className={'w-28'}>
-                    <img src={`/books/${book.imgUrl}`} alt={book.imgUrl}/>
+                    <img src={`/books/${book.imgUrl}`}
+                         alt={book.imgAlt}/>
                 </div>
                 <div className={'mt-2'}>{book.title}</div>
                 <div>Progress: {UserState.GetBookProgressPercentage(book)}</div>

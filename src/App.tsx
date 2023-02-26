@@ -5,14 +5,16 @@ import Home from "./pages/Home";
 import {BookReader} from "./pages/BookReader";
 import {BookList} from "./pages/BookList";
 import {BookInfo} from "./classes/BookInfo";
+import {BookCreate} from "./pages/BookCreate";
+import {BookRepository} from "./classes/BookRepository";
 
 export default function App() {
     const navigate = useNavigate();
     const [books, setBooks] = useState<Array<BookInfo>>([]);
     useEffect(() => {
-        fetch('/books/list.json')
-            .then(res => res.json())
-            .then(data => setBooks(data.books))
+        BookRepository
+            .GetBookInfos()
+            .then(books => setBooks(books))
     }, [])
 
     return (
@@ -30,8 +32,9 @@ export default function App() {
 
                 <Routes>
                     <Route path='/' element={<Home/>}/>
-                    <Route path='/list' element={<BookList books={books}/>}/>
                     <Route path='/books/:bookId' element={<BookReader books={books}/>}/>
+                    <Route path='/books/list' element={<BookList books={books}/>}/>
+                    <Route path='/books/create' element={<BookCreate/>}/>
                 </Routes>
             </div>
         </main>
