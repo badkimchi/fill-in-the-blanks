@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Route, Routes, useNavigate} from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import Home from "./pages/Home";
 import {BookReader} from "./pages/BookReader";
 import {BookList} from "./pages/BookList";
@@ -10,12 +10,14 @@ import {BookRepository} from "./classes/BookRepository";
 
 export default function App() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [books, setBooks] = useState<Array<BookInfo>>([]);
+
     useEffect(() => {
         BookRepository
             .GetBookInfos()
             .then(books => setBooks(books))
-    }, [])
+    }, [location])
 
     return (
         <main className="w-full min-h-screen bg-gradient-to-l from-slate-700 to-slate-800">

@@ -1,5 +1,4 @@
 import {BookInfo} from "./BookInfo";
-import {Book} from "./Book";
 
 const splitByLines = (text: string): Array<string> => {
     return text.split('\n').filter((t: string) => t !== '')
@@ -58,7 +57,7 @@ export class BookRepository {
         filteredText = filteredText.replace('. ', '. \n');
         filteredText = filteredText.replace('; ', '; \n');
         filteredText = filteredText.replace(': ', ': \n');
-        this.storage.setItem(name, JSON.stringify({"text": filteredText}));
+        this.storage.setItem(name, filteredText);
         this.storage.setItem(name + 'LineCnt', String(splitByLines(filteredText).length));
         const list = BookRepository.GetLocalBookNames();
         list.push(name);
@@ -77,8 +76,7 @@ export class BookRepository {
             console.error('unable to retrieve local book data');
             return [];
         }
-        const book = JSON.parse(data) as Book
-        return splitByLines(book.text);
+        return splitByLines(data);
     }
 
     /**
