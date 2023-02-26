@@ -11,7 +11,8 @@ export const BookIntro: React.FC<BookIntroProps> = ({book}) => {
     const navigate = useNavigate();
     return (
         <React.Fragment>
-            <div className={'flex flex-col space-x-3 mb-2 h-50 items-center justify-center mt-10'}
+            <div className={'flex flex-col space-x-3 mb-2 h-50 items-center justify-center mt-10 ' +
+                'hover:skew-y-3 hover:scale-150 hover:text-green-300'}
                  onClick={() => navigate(`/books/${book.id}`)}>
                 <div className={'w-28'}>
                     <img src={`/books/${book.imgUrl}`} alt={book.imgUrl}/>
