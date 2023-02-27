@@ -5,8 +5,11 @@
 ## Features
 
 - All books in the game are in public domain (from Gutenberg Project.)
-- Everything is done on the client side.
-- You can use your own text file to create a book in the selection (stored in the web localStorage)
+- You can use your own text file to play your own book (stored in the web localStorage.)
+- Choose the number of blanks to adjust difficulty.
+- Shuffle to change which words are chosen as blanks.
+- Reset to start from the beginning.
+- All interaction is done on the client side and progress is saved in the browser's local storage.
 
 ## Play
 
