@@ -13,6 +13,6 @@
 
 ## Play
 
-Play [Fill In The Blanks](https://remarkable-pastelito-2acf5e.netlify.app/) here.
+Play [Fill In The Blanks](https://fillintheblanks.netlify.app/) here.
 
-![alt text](https://remarkable-pastelito-2acf5e.netlify.app/gamePlay.png)
+![alt text](https://fillintheblanks.netlify.app/gamePlay.png)
