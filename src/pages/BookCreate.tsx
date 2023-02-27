@@ -17,12 +17,20 @@ export const BookCreate: React.FC = () => {
                         cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700
                         dark:border-gray-600 dark:placeholder-gray-400"
                         type="file"
+                        accept={'.txt'}
                         width={'auto'}
                         onChange={(e) => {
                             const f = e.target?.files && e.target.files[0];
                             if (!f) {
                                 return;
                             }
+
+                            //"accept" restrictions are not enforced in some browsers
+                            if (f.name.split('.').pop() !== 'txt') {
+                                alert('only txt file is accepted!');
+                                return;
+                            }
+                            
                             const fr = new FileReader();
                             fr.onload = function () {
                                 setContent(fr.result)
