@@ -50,6 +50,20 @@ export class UserState {
 
 
     /**
+     * returns true if the user completed at least one page.
+     *
+     * @constructor
+     * @param book
+     */
+    public static GetBookStarted(book: BookInfo): boolean {
+        if (!book) {
+            return false;
+        }
+        const lineRead = UserState.GetBookProgressLineNo(book.id)
+        return lineRead > 0;
+    }
+
+    /**
      * returns progress in percentage
      *
      * @constructor

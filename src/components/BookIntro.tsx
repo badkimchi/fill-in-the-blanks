@@ -2,6 +2,7 @@ import {useNavigate} from "react-router-dom";
 import React from "react";
 import {BookInfo} from "../classes/BookInfo";
 import {UserState} from "../classes/UserState";
+import {Btn} from "./Btn";
 
 interface BookIntroProps {
     book: BookInfo
@@ -21,6 +22,16 @@ export const BookIntro: React.FC<BookIntroProps> = ({book}) => {
                 <div className={'mt-2'}>{book.title}</div>
                 <div>Progress: {UserState.GetBookProgressPercentage(book)}</div>
             </div>
+            {
+                UserState.GetBookStarted(book) &&
+                <Btn label={'restart'} disabled={false} onClick={() => {
+                    const confirm = window.confirm('do you want to reset progress and restart this book?')
+                    if (confirm) {
+                        UserState.ResetBookProgress(book.id);
+                        navigate(`/books/${book.id}`);
+                    }
+                }}/>
+            }
         </React.Fragment>
     )
 }

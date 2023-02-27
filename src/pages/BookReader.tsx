@@ -232,7 +232,7 @@ export const BookReader: React.FC<props> = ({books}) => {
         if (!bookLoaded) {
             return;
         }
-        if (line >= endLineNumber) {
+        if (line > endLineNumber) {
             setCompleted(true);
             return;
         }
