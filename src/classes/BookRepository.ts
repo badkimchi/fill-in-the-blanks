@@ -8,6 +8,7 @@ const splitByLines = (text: string): Array<string> => {
  * key for localStorage to retrieve the list of local book (user's custom books) names
  */
 const localBookList = 'localBookList';
+const lineCnt = 'LineCnt'; //bookId + LineCnt
 
 export class BookRepository {
     private static storage = localStorage;
@@ -18,8 +19,9 @@ export class BookRepository {
      */
     public static async GetBookInfos(): Promise<Array<BookInfo>> {
         const localBooks = BookRepository.GetLocalBookNames();
-        const localInfos = localBooks.map(name => {
-            return new BookInfo(name, name, true, "1.jpg", "", 200)
+        const localInfos = localBooks.map(bookId => {
+            return new BookInfo(bookId, bookId, true, "1.jpg", "",
+                BookRepository.GetLocalBookLineCnt(bookId))
         })
 
         const remoteBooks = await fetch('/books/list.json')
@@ -48,19 +50,19 @@ export class BookRepository {
     /**
      * Save user's custom book in local storage.
      *
-     * @param name is treated as id
+     * @param bookId is treated as id
      * @param text
      * @constructor
      */
-    public static CreateLocalBook(name: string, text: string) {
+    public static CreateLocalBook(bookId: string, text: string) {
         let filteredText = text.replace('\n\n', '\n');
         filteredText = filteredText.replace('. ', '. \n');
         filteredText = filteredText.replace('; ', '; \n');
         filteredText = filteredText.replace(': ', ': \n');
-        this.storage.setItem(name, filteredText);
-        this.storage.setItem(name + 'LineCnt', String(splitByLines(filteredText).length));
+        this.storage.setItem(bookId, filteredText);
+        this.storage.setItem(bookId + lineCnt, String(splitByLines(filteredText).length));
         const list = BookRepository.GetLocalBookNames();
-        list.push(name);
+        list.push(bookId);
         const dupRemovedlist = Array.from(new Set(list));
         this.storage.setItem(localBookList, JSON.stringify(dupRemovedlist));
     }
@@ -77,6 +79,19 @@ export class BookRepository {
             return [];
         }
         return splitByLines(data);
+    }
+
+    /**
+     * returns text data of the local book
+     * @constructor
+     * @private
+     */
+    private static GetLocalBookLineCnt(id: string): number {
+        let cnt = this.storage.getItem(id + lineCnt)
+        if (!cnt) {
+            return 1;
+        }
+        return parseInt(cnt);
     }
 
     /**

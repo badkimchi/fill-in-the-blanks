@@ -59,9 +59,9 @@ export class UserState {
         if (!book) {
             return '0%';
         }
-
         const lineRead = UserState.GetBookProgressLineNo(book.id)
-        return (lineRead * 100 / book.lineCnt).toFixed(2) + '%'
+        const progress = lineRead * 100 / book.lineCnt
+        return Math.min(progress, 100).toFixed(2) + '%'
     }
 
 

@@ -19,11 +19,13 @@ export const BookList: React.FC<props> = ({books}) => {
                         books?.map(book => <BookIntro key={book.id} book={book}/>)
                     }
                 </div>
-                <Btn label={'Load from Text File'}
-                     disabled={false}
-                     onClick={() => {
-                         navigate('/books/create');
-                     }}/>
+                <div className={'mt-20'}>
+                    <Btn label={'Load from Text File'}
+                         disabled={false}
+                         onClick={() => {
+                             navigate('/books/create');
+                         }}/>
+                </div>
             </div>
         </React.Fragment>
     )

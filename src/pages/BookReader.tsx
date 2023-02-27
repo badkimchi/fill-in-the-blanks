@@ -10,6 +10,7 @@ import {useParams} from "react-router-dom";
 import {UserState} from "../classes/UserState";
 import {BookInfo} from "../classes/BookInfo";
 import {BookRepository} from "../classes/BookRepository";
+import {Btn} from "../components/Btn";
 
 interface props {
     books: Array<BookInfo>
@@ -135,6 +136,12 @@ export const BookReader: React.FC<props> = ({books}) => {
         return true;
     }
 
+    const turnPage = (): void => {
+        const newLine = line + linesPerPage;
+        setLine(newLine);
+        UserState.SaveBookProgress(bookId, newLine);
+    }
+
     /**
      * Load the book from the server.
      */
@@ -219,21 +226,16 @@ export const BookReader: React.FC<props> = ({books}) => {
 
 
     /**
-     * When all blanks are filled, turn the page to the next.
+     * check for completion of the game.
      */
     useEffect(() => {
-        if (blankIdxes.length > 0 || !bookLoaded) {
+        if (!bookLoaded) {
             return;
         }
-        if (line === endLineNumber) {
+        if (line >= endLineNumber) {
             setCompleted(true);
             return;
         }
-        setBlankIdxes([0])
-        setTimeout(() => {
-            setLine(line => line + linesPerPage);
-        }, 500)
-        UserState.SaveBookProgress(bookId, line + linesPerPage);
     }, [bookLoaded, bookId, blankIdxes, line, endLineNumber])
 
     if (hasError) {
@@ -294,6 +296,10 @@ export const BookReader: React.FC<props> = ({books}) => {
                         word={tokens[idx].getWord()}
                         guessBlank={guessBlank}
                     />)
+                }
+                {
+                    blankIdxes.length === 0 &&
+                    <Btn label={'Next'} disabled={false} onClick={turnPage}/>
                 }
             </div>
         </React.Fragment>

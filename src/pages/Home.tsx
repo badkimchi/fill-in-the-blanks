@@ -46,11 +46,13 @@ export default function Home() {
                             <WordContainer key={idx} word={word} inQuestion={false}/>)
                     }
                 </div>
-                <Btn label={'Get Started'}
-                     disabled={false}
-                     onClick={() => {
-                         navigate('/books/list');
-                     }}/>
+                <div className={'mt-20'}>
+                    <Btn label={'Get Started'}
+                         disabled={false}
+                         onClick={() => {
+                             navigate('/books/list');
+                         }}/>
+                </div>
             </div>
         </React.Fragment>
     )
