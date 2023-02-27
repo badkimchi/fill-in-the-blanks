@@ -13,7 +13,7 @@ export const Btn: React.FC<props> = ({disabled, onClick, label}) => {
             'hover:text-white py-2 px-4 border border-blue-300 hover:border-transparent rounded ' +
             'transition ease-in-out duration-100 text-center '}
         >
-            <button onClick={onClick} disabled={disabled}>
+            <button className={'w-full h-full'} onClick={onClick} disabled={disabled}>
                 {label}
             </button>
         </div>
