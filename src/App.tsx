@@ -22,14 +22,16 @@ export default function App() {
     return (
         <main className="w-full min-h-screen bg-gradient-to-l from-slate-700 to-slate-800">
             <div className={'font-mono text-white container mx-auto'}>
-                <header
-                    className={'h-20 flex justify-center items-center text-xl font-bold ' +
-                        'cursor-pointer hover:text-emerald-500'}
-                    onClick={() => {
-                        navigate('/');
-                    }}
-                >
-                    Fill In The Blanks
+                <header>
+                    <h1
+                        className={'h-20 flex justify-center items-center text-xl font-bold ' +
+                            'cursor-pointer hover:text-emerald-500'}
+                        onClick={() => {
+                            navigate('/');
+                        }}
+                    >
+                        Fill In The Blanks
+                    </h1>
                 </header>
 
                 <Routes>
